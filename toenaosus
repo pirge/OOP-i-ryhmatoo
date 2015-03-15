@@ -19,7 +19,7 @@ public class Peaklass {
 			scanner = new Scanner(System.in);
 			Scanner input = scanner;
 			System.out.println("\nMis laadi ülesannet soovite lahendada? Sisestage vastav arv + ENTER.\n"
-					+ "(Ei soovi enam lahendada - 0, Klassikaline tõenäosus - 1, Bernoulli valem - 2, Keskväärtus/dispersioon/standardhälve - 3)");
+					+ "(Ei soovi enam lahendada - 0, Klassikaline tõenäosus - 1, Bernoulli valem - 2, Keskväärtus/dispersioon/standardhälve - 3, Poissoni jaotus - 4)");
 			String yl = input.nextLine();
 
 			switch(yl){ //programm töötab eri numbritega erinevalt
@@ -69,7 +69,16 @@ public class Peaklass {
 				DispKeskHälve uus = new DispKeskHälve(jaotused,tõenäosused);
 				System.out.println(uus);
 				break;
-
+			case "4":
+				System.out.println("Sisestage arv k.(arv, mis näitab mitu korda sündmus vähemalt toimub)");
+				k = input.nextLine();
+				System.out.println("Sisestage sündmuse toimumiste arv.");
+				n = input.nextLine();
+				System.out.println("Sisestage üksiksündmuse tõenäosus.");
+				p = input.nextLine();
+				PoissoniJaotus tulemus = new PoissoniJaotus(k,n,p);
+				System.out.println(tulemus.tõenäosus());
+				break;		
 			default: //Kui sisestatakse midagi, mida kirjas ei ole
 				System.out.println("Vigane sisend."+ "\n");
 			}
@@ -294,3 +303,55 @@ public class DispKeskHälve {
 	
 	
 }
+
+
+POISSONI JAOTUS 
+
+
+package rühmatöö;
+import java.text.DecimalFormat;
+public class PoissoniJaotus {
+	int k; //sündmuste loendaja
+	int n; // kõikide võimaluste arv
+	double p; //üksiksündmuse tõenäosus
+	Kontroll arvud = new Kontroll();
+	DecimalFormat df = new DecimalFormat("#.####");
+	public PoissoniJaotus(String k, String n, String p) {
+		super();
+		this.k = arvud.onint(k);
+		this.n = arvud.onint(n);
+		this.p = arvud.onreaal(p);
+	}
+	
+	int fakt(int arv) {
+		int faktoriaal = 1;
+		for (int i = 1; i <= arv; i++) {
+			faktoriaal *= i;
+		}
+		return faktoriaal;
+	}
+	
+	double valem(int k) {
+		double l = n*p; //lambda
+		return Math.pow(l, k)/fakt(k)*Math.pow(Math.E, -l);
+	}
+	
+	double summa() { //liidab kokku vastandsündmused
+		double summa = 0.0;
+		for (int i = 0; i<k;i++){
+			summa += valem(i);
+		}
+		return summa;
+	}
+	
+	String tõenäosus() {
+		if ( k > 0 && p >= 0 && p <= 1 && n < 0 ) {
+			return "Tõenäosus on: " + df.format(1-summa());
+		}
+		else {
+			return "Vigane sisend.\nSisestatud arvud peavad olema positiivsed ning tõenäosus peab jääma lõiku 0-st 1-ni.";
+		}
+	}
+	
+}
+
