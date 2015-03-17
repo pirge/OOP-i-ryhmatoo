@@ -1,18 +1,15 @@
+TESTKLASS
+
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
-
-public class Peaklass {
-
+public class TestKlass {
 	private static Scanner scanner;
-
 	public static void main(String[] args) throws InterruptedException {
 		String a1;
 		String a2;
 		String a3;
-
-		while (true){	//töötab nii kaua, kuni sisestatakse 0
-
+		while (true){ //töötab nii kaua, kuni sisestatakse 0
 			int jatk = 1;
 			scanner = new Scanner(System.in);
 			Scanner input = scanner;
@@ -20,21 +17,18 @@ public class Peaklass {
 					+ "(Ei soovi enam lahendada - x\nNaidis - 0\nKlassikaline tõenäosus - 1\nBernoulli valem - "
 					+ "2\nKeskväärtus/dispersioon/standardhälve - 3\nPoissoni Jaotus - 4\nBayes'i valem - 5)");
 			String ylesanne = input.nextLine();
-
 			switch(ylesanne){ //programm küsib erinevate teemade juures teistsuguseid küsimusi ning kasutab erinevaid klasse
-
 			case "x":
 				jatk = 0; //jatk on null, täidetakse järgmist rida
 				break;
-				
 			case "0":
 				int a = 1;
 				int b = (int)Math.round(Math.random()*15+1);
 				double c = Math.random();
 				Naidis naidis = new Naidis(a,b,c);
 				System.out.print("Programm hakkab küsima järjest arve. Kui sisestate vale arvu, väljastab programm veateate.\nÕigesti sisestades peaks "
-						+ "programm töötama järgmiselt.");
-				TimeUnit.SECONDS.sleep(5);
+						+ "programm töötama järgmiselt. Näites on tegu Bernoulli valemiga.");
+				TimeUnit.SECONDS.sleep(10);
 				System.out.println("\nSisestage sündmuse toimumiste arv.");
 				TimeUnit.SECONDS.sleep(1);
 				System.out.println(naidis.getK());
@@ -50,17 +44,14 @@ public class Peaklass {
 				System.out.println("\n" + naidis + "\n\n");
 				TimeUnit.SECONDS.sleep(1);
 				break;
-
 			case "1":
 				System.out.println("Sisestage soodsate võimaluste arv.");
 				a1 = input.nextLine();
 				System.out.println("Sisestage kõikide võimaluste arv.");
 				a2 = input.nextLine();
-
 				KlassikalineTõenäosus klassikaline = new KlassikalineTõenäosus(a1,a2);
 				System.out.println(klassikaline + "\n");
 				break;
-
 			case "2":
 				System.out.println("Sisestage sündmuse toimumiste arv.");
 				a1 = input.nextLine();
@@ -68,32 +59,25 @@ public class Peaklass {
 				a2 = input.nextLine();
 				System.out.println("Sisestage üksiku sündmuse tõenäosus.");
 				a3 = input.nextLine();
-
 				Bernoulli vastus = new Bernoulli(a1,a2,a3);
-				System.out.println(vastus.bernoulli()+ "\n");
+				System.out.println(vastus+ "\n");
 				break;
-
 			case "3":
 				ArrayList<String> jaotused = new ArrayList<String>();
 				ArrayList<String> tõenäosused = new ArrayList<String>();
-
 				System.out.println("Sisestage sündmuse X-i jaotused. Eraldage need arvud tühikutega.");
 				a1 = input.nextLine();
 				String [] osad = a1.split(" ");
-				
 				System.out.println("Sisestage sündmuse X-i jaotustele vastavad tõenäosused kümnendmurruna(5 kohta pärast koma). Eraldage need tühikutega.");
 				a2 = input.nextLine();
 				String [] osad2 = a2.split(" ");
-				
 				for (int i= 0; i < osad.length; i++)
 					jaotused.add(osad[i]);
 				for (int j = 0; j < osad2.length; j++)
 					tõenäosused.add(osad2[j]);
-
 				DispKeskHälve uus = new DispKeskHälve(jaotused,tõenäosused);
 				System.out.println(uus + "\n");
 				break;
-				
 			case "4":
 				System.out.println("Sisestage arv k.(arv, mis näitab mitu korda sündmus vähemalt toimub)");
 				a1 = input.nextLine();
@@ -101,11 +85,9 @@ public class Peaklass {
 				a2 = input.nextLine();
 				System.out.println("Sisestage üksiksündmuse tõenäosus.");
 				a3 = input.nextLine();
-				
 				PoissoniJaotus tulemus = new PoissoniJaotus(a1,a2,a3);
 				System.out.println(tulemus + "\n");
 				break;
-				
 			case "5":
 				System.out.println("Sisestage sündmuse A tõenäosus.");
 				a1 = input.nextLine();
@@ -113,11 +95,9 @@ public class Peaklass {
 				a2 = input.nextLine();
 				System.out.println("Sisestage tingliku sündmuse A|B tõenäosus.");
 				a3 = input.nextLine();
-				
 				BayesiValem bayes = new BayesiValem(a1,a2,a3);
 				System.out.println(bayes + "\n");
 				break;
-
 			default: //Kui sisestatakse midagi, mida kirjas ei ole
 				System.out.println("Vigane sisend."+ "\n");
 			}
@@ -125,87 +105,60 @@ public class Peaklass {
 				break;
 			}
 			TimeUnit.SECONDS.sleep(5);
-
 		}
-
 	}
-
 }
-
-
-
-
 
 
 KONTROLL
 
-
+package rühmatöö;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
 //Klassis Kontroll on olemas meetodid, mida kasutavad teised klassid.
 public class Kontroll {
-	String a;
-	
 	DecimalFormat ymarda = new DecimalFormat("#.####"); //ümardab 4 komakohani
 	
-	public Kontroll(String a) {
-		super();
-		this.a = a;
-	}
-
-	public Kontroll() {
-		this("0");
-	}
-
-	
-	int onint(String arv){	//kontrollib, kas sisestatud arv on täisarvutüüpi
-		boolean parse = true;
+	int onint(String arv){ //kontrollib, kas sisestatud arv on täisarvutüüpi
+		boolean tõeväärtus = true;
 		try{
 			Integer.parseInt(arv);
 		}catch(NumberFormatException e){
-			parse = false;
+			tõeväärtus = false;
 		}
-		if (parse == false){
+		if (tõeväärtus == false){
 			return 0;
 		}
 		return Integer.parseInt(arv);
 	}
-
-	double onreaal(String arv){ //kontrollib kas sisestatud arv on double tüüpi
-		boolean parse = true;
+	double ondouble(String arv){ //kontrollib kas sisestatud arv on double tüüpi
+		boolean tõeväärtus = true;
 		try{
 			Double.parseDouble(arv);
 		}catch(NumberFormatException e){
-			parse = false;
+			tõeväärtus = false;
 		}
-		if (parse == false){
+		if (tõeväärtus == false){
 			return 0;
 		}
 		return Double.parseDouble(arv);
 	}
-	
-	
-	
 	//kontrollib kas listis olevad elemendid on arvud (int-i saab double'ks teha)
-	
 	ArrayList<String> onreaalelement(ArrayList<String> listike, ArrayList<String> listike2){
-		boolean parse = true;
+		boolean tõeväärtus = true;
 		for(int i = 0; i < listike.size(); i++)
 			try{
 				Double.parseDouble(listike.get(i));
 			}catch(NumberFormatException e){
-				parse = false;
+				tõeväärtus = false;
 			}
 		//kontrollib listide pikkuste võrdsust
-		if (parse == false || listike.size() != listike2.size()){ 
+		if (tõeväärtus == false || listike.size() != listike2.size()){
 			listike.clear();
 			return listike;
 		}
 		return listike;
 	}
-	
-	
 	int fakt(int arv) { //faktoriaali arvutamine
 		int faktoriaal = 1;
 		for (int i = 1; i <= arv; i++) {
@@ -216,113 +169,21 @@ public class Kontroll {
 }
 
 
+NÄIDIS
 
 
-
-
-KLASSIKALINE TÕENÄOSUS
-
-
-
-public class KlassikalineTõenäosus extends Kontroll{
-	int k; //soodsad võimalused
-	int n; //kõik võimalused
-
-
-	public KlassikalineTõenäosus(String k, String n) {
-		super();
-		this.k = onint(k);
-		this.n = onint(n);
-	}
-
-	double klassikalinetn() {
-		if(k <= n && k > 0 && n > 0){
-			double tn = (double) k/n;
-			return tn;
-		}
-		else{
-			return 0.0;
-		}
-	}
-
-	public String toString() {
-		if(klassikalinetn() == 0.0){
-			return "Vigane sisend.";
-		}
-		return "Tõenäosus on: " + ymarda.format(klassikalinetn());
-	}
-
-}
-
-
-
-
-
-
-BERNOULLI
-
-
-
-public class Bernoulli extends Kontroll {
-	int k; //soodsad võimalused
-	int n; //kõik võimalused
-	double p; //üksiku sündmuse tõenäosus
-	
-	public Bernoulli(String k, String n, String p) {
-		super();
-		this.k = onint(k);
-		this.n = onint(n);
-		this.p = onreaal(p);
-	}
-	public Bernoulli(int k, int n, double p){
-		super();
-		this.k = k;
-		this.n = n;
-		this.p = p;
-	}
-
-	double bernoulli() {
-		if ( k <= n && n > 0 && k > 0 && p != 0 && p < 1 && p > 0){
-			return  ((fakt(n)/(fakt(k)*fakt(n-k)))*Math.pow(p, k)*Math.pow((1-p),(n-k)));
-		}
-		else{
-			return -1.0;
-		}
-	}
-
-	public String toString() {
-		if (bernoulli() == -1.0){
-			return "Vigane sisend. Võimalikud probleemid: \n1) Sündmuste toimumiste arv ületab kõikide võimaluste arvu\n"
-					+ "2) Sisestatud ei ole arve, vaid midagi muud\n3) Sisestatud arvud peavad olema nullist erinevad\n"
-					+ "4) Tõenäosus peab olema komakohaga arv ning väiksem kui 1";
-		}
-		return "Tõenäosus on: " + ymarda.format(bernoulli());
-	}
-	
-}
-
-
-
-
-
-
-NAIDIS
-
-
-
+package rühmatöö;
 
 public class Naidis extends Bernoulli{
 	int k;
 	int n;
 	double p;
-	
 	public Naidis(int k, int n, double p) {
 		super(k,n,p);
 		this.k = k;
 		this.n = n;
 		this.p = p;
 	}
-	
 	public int getK() {
 		return k;
 	}
@@ -345,70 +206,165 @@ public class Naidis extends Bernoulli{
 	public String toString() {
 		return "Tõenäosus on: " + ymarda.format(bernoulli());
 	}
-	
-	
-
 }
 
 
+KLASSIKALINE TÕENÄOSUS
+
+package rühmatöö;
+public class KlassikalineTõenäosus extends Kontroll{
+	int k; //soodsad võimalused
+	int n; //kõik võimalused
+	public KlassikalineTõenäosus(String k, String n) {
+		super();
+		this.k = onint(k);
+		this.n = onint(n);
+	}
+	double klassikalinetn() {
+		if(k <= n && k > 0 && n > 0){
+			double tn = (double) k/n;
+			return tn;
+		}
+		else{
+			return 0.0;
+		}
+	}
+	public String toString() {
+		if(klassikalinetn() == 0.0){
+			return "Vigane sisend.";
+		}
+		return "Tõenäosus on: " + ymarda.format(klassikalinetn());
+	}
+}
+
+DISP KESK HÄLVE
+
+package rühmatöö;
+import java.util.ArrayList;
+public class DispKeskHälve extends Kontroll {
+	ArrayList <String> x; // jaotuste list
+	ArrayList <String> p; // tõenäosuste list
+	public DispKeskHälve(ArrayList<String> x, ArrayList<String> p) {
+		super();
+		this.x = onreaalelement(x,p);
+		this.p = onreaalelement(p,x);
+	}
+	double keskväärtus(){
+		double summa = 0;
+		for(int i = 0; i < x.size(); i++)
+			summa = summa + Double.parseDouble(x.get(i))*Double.parseDouble(p.get(i));
+		return summa;
+	}
+	double dispersioon(){
+		double summa = 0;
+		for(int i = 0; i < x.size(); i++)
+			summa = summa + Math.pow(Double.parseDouble(x.get(i)), 2)*Double.parseDouble(p.get(i));
+		double dispersioon = summa - Math.pow(keskväärtus(),2);
+		return dispersioon;
+	}
+	double standardhälve(){
+		return Math.sqrt(dispersioon());
+	}
+	public String toString() {
+		double summa = 0.0;
+		for(int a = 0; a < p.size(); a++)
+			summa = summa + Double.parseDouble(p.get(a));
+		if (x.isEmpty() || p.isEmpty() || summa != 1){
+			return "Vigane sisend. Võimalikud probleemid: \n1) Sisestatud pole arve\n2) Jaotuste ja tõenäosuste elementide arvud on erinevad\n3) Tõenäosuste summa ei ole 1\n "; }
+		return "Keskväärtus: " + ymarda.format(keskväärtus())
+				+ "\nDispersioon: " + ymarda.format(dispersioon()) + "\nStandardhälve: "
+				+ ymarda.format(standardhälve());
+	}
+}
 
 
-BAYES VALEM
+BERNOULLI 
 
 
+package rühmatöö;
+public class Bernoulli extends Kontroll {
+	int k; //soodsad võimalused
+	int n; //kõik võimalused
+	double p; //üksiku sündmuse tõenäosus
+	public Bernoulli(String k, String n, String p) {
+		super();
+		this.k = onint(k);
+		this.n = onint(n);
+		this.p = ondouble(p);
+	}
+	public Bernoulli(int k, int n, double p){
+		super();
+		this.k = k;
+		this.n = n;
+		this.p = p;
+	}
+	double bernoulli() {
+		if ( k <= n && n > 0 && k > 0 && p != 0 && p < 1 && p > 0){
+			return ((fakt(n)/(fakt(k)*fakt(n-k)))*Math.pow(p, k)*Math.pow((1-p),(n-k)));
+		}
+		else{
+			return 0.0;
+		}
+	}
+	public String toString() {
+		if (bernoulli() == 0.0){
+			return "Vigane sisend. Võimalikud probleemid: \n1) Sündmuste toimumiste arv ületab kõikide võimaluste arvu\n"
+					+ "2) Sisestatud ei ole arve, vaid midagi muud\n3) Sisestatud arvud peavad olema nullist erinevad\n"
+					+ "4) Tõenäosus peab olema komakohaga arv ning väiksem kui 1";
+		}
+		return "Tõenäosus on: " + ymarda.format(bernoulli());
+	}
+}
 
+
+BAYESI VALEM
+
+
+package rühmatöö;
 
 public class BayesiValem extends Kontroll {
 	double p1;
 	double p2;
 	double p3;
-	
-
-	
 	public BayesiValem(String p1, String p2, String p3) {
 		super();
-		this.p1 = onreaal(p1); // A tõenäosus
-		this.p2 = onreaal(p2); // B tõenäosus
-		this.p3 = onreaal(p3); // A|B tõenäosus (A tingimusel B)
+		this.p1 = ondouble(p1); // A tõenäosus
+		this.p2 = ondouble(p2); // B tõenäosus
+		this.p3 = ondouble(p3); // A|B tõenäosus (A tingimusel B)
 	}
-	
 	double Bayes(){
 		return p3*p2/p1;
 	}
-	
 	public String toString() {
-		if (p1 == 0 || p2 == 0 || p3 == 0){
+		if (p1 <= 0 || p1 > 1|| p2 < 0 || p2 > 1 || p3 < 0 || p3 > 1){
 			return "Vigane sisend.";
 		}
 		return "Bayes'i valemi põhjal on tõenäosus: " + ymarda.format(Bayes());
+		
 	}
-	
 }
-
 
 
 
 POISSONI JAOTUS
 
 
+package rühmatöö;
+
 public class PoissoniJaotus extends Kontroll{
 	int k; //sündmuste loendaja
 	int n; // kõikide võimaluste arv
 	double p; //üksiksündmuse tõenäosus
-	
-
 	public PoissoniJaotus(String k, String n, String p) {
 		super();
 		this.k = onint(k);
 		this.n = onint(n);
-		this.p = onreaal(p);
+		this.p = ondouble(p);
 	}
-	
 	double valem(int k) {
 		double l = n*p; //lambda
 		return Math.pow(l, k)/fakt(k)*Math.pow(Math.E, -l);
 	}
-	
 	double summa() { //liidab kokku vastandsündmused
 		double summa = 0.0;
 		for (int i = 0; i<k;i++){
@@ -416,7 +372,6 @@ public class PoissoniJaotus extends Kontroll{
 		}
 		return summa;
 	}
-	
 	double tõenäosus() {
 		if ( k > 0 && p > 0 && p < 1 && n > 0) {
 			return 1-summa();
@@ -425,69 +380,12 @@ public class PoissoniJaotus extends Kontroll{
 			return 0.0;
 		}
 	}
-
 	public String toString() {
 		if (tõenäosus() == 0.0){
 			return "Vigane sisend.\nSisestatud arvud peavad olema positiivsed ning tõenäosus peab jääma lõiku 0-st 1-ni.";
 		}
 		return "Tõenäosus on: " + ymarda.format(tõenäosus());
 	}
-}
-
-
-
-
-DISPKESKHÄLVE
-
-
-
-import java.util.ArrayList;
-
-
-public class DispKeskHälve extends Kontroll {
-	ArrayList <String> x; // jaotuste list
-	ArrayList <String> p; // tõenäosuste list
-
-	
-	public DispKeskHälve(ArrayList<String> x, ArrayList<String> p) {
-		super();
-		this.x = onreaalelement(x,p);
-		this.p = onreaalelement(p,x);
-	}
-	
-	double keskväärtus(){
-		double summa = 0;
-		for(int i = 0; i < x.size(); i++)
-			summa = summa + Double.parseDouble(x.get(i))*Double.parseDouble(p.get(i));
-		return summa;
-	}
-	
-	double dispersioon(){
-		double summa = 0;
-		for(int i = 0; i < x.size(); i++)
-			summa = summa + Double.parseDouble(x.get(i))*Double.parseDouble(x.get(i))*Double.parseDouble(p.get(i));
-		double dispersioon = summa - keskväärtus()*keskväärtus();
-		return dispersioon;
-	}
-	
-	double standardhälve(){
-		return Math.sqrt(dispersioon());
-	}
-	
-	public String toString() {
-		double summa = 0.0;
-		for(int a = 0; a < p.size(); a++)
-			summa = summa + Double.parseDouble(p.get(a));
-		
-		if (x.isEmpty() || p.isEmpty() || summa != 1){
-			return "Vigane sisend. Võimalikud probleemid: \n1) Sisestatud pole arve\n2) Jaotuste ja tõenäosuste elementide arvud on erinevad\n3) Tõenäosuste summa ei ole 1\n ";		}
-		
-		return "Keskväärtus: " + ymarda.format(keskväärtus())
-				+ "\nDispersioon: " + ymarda.format(dispersioon()) + "\nStandardhälve: "
-				+ ymarda.format(standardhälve());
-	}
-	
-	
 }
 
 
