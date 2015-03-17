@@ -112,7 +112,7 @@ public class TestKlass {
 
 KONTROLL
 
-package rühmatöö;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 //Klassis Kontroll on olemas meetodid, mida kasutavad teised klassid.
@@ -172,7 +172,6 @@ public class Kontroll {
 NÄIDIS
 
 
-package rühmatöö;
 
 public class Naidis extends Bernoulli{
 	int k;
@@ -211,7 +210,7 @@ public class Naidis extends Bernoulli{
 
 KLASSIKALINE TÕENÄOSUS
 
-package rühmatöö;
+
 public class KlassikalineTõenäosus extends Kontroll{
 	int k; //soodsad võimalused
 	int n; //kõik võimalused
@@ -239,7 +238,8 @@ public class KlassikalineTõenäosus extends Kontroll{
 
 DISP KESK HÄLVE
 
-package rühmatöö;
+
+
 import java.util.ArrayList;
 public class DispKeskHälve extends Kontroll {
 	ArrayList <String> x; // jaotuste list
@@ -281,7 +281,7 @@ public class DispKeskHälve extends Kontroll {
 BERNOULLI 
 
 
-package rühmatöö;
+
 public class Bernoulli extends Kontroll {
 	int k; //soodsad võimalused
 	int n; //kõik võimalused
@@ -320,7 +320,6 @@ public class Bernoulli extends Kontroll {
 BAYESI VALEM
 
 
-package rühmatöö;
 
 public class BayesiValem extends Kontroll {
 	double p1;
@@ -348,8 +347,6 @@ public class BayesiValem extends Kontroll {
 
 POISSONI JAOTUS
 
-
-package rühmatöö;
 
 public class PoissoniJaotus extends Kontroll{
 	int k; //sündmuste loendaja
