@@ -1,6 +1,6 @@
 import javafx.application.Application;
-import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
+
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -9,67 +9,36 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
 import java.awt.Dimension;
 import java.awt.GridLayout;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-class NulligaJagamiseErind extends ArithmeticException {
+class VigaseSisendiErind extends ArithmeticException {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	NulligaJagamiseErind(String s){
+	VigaseSisendiErind(String s){
 		super(s);
 	}
 
 }
-
-class NimetajaVäiksemKuiLugeja extends Exception{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	NimetajaVäiksemKuiLugeja(String s){
-		super(s);
-	}
-}
-
-class TõenäosuseErind extends Exception{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	TõenäosuseErind(String s){
-		super(s);
-	}
-}
-
-class TäisarvuErind extends Exception{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	TäisarvuErind(String s){
-		super(s);
-	}
-}
-
 
 
 
 public class Peaklass extends Application {
-
-
 
 
 	int onint(String arv) { //kontrollib, kas sisestatud arv on täisarvutüüpi
@@ -97,8 +66,24 @@ public class Peaklass extends Application {
 		}
 		return Double.parseDouble(arv);
 	}
-
-	void FailiLugemine(String arvuke, String tyyp) {
+	
+	ArrayList<String> onreaalelement(ArrayList<String> listike, ArrayList<String> listike2){
+		boolean tõeväärtus = true;
+		for(int i = 0; i < listike.size(); i++)
+			try{
+				Double.parseDouble(listike.get(i));
+			}catch(NumberFormatException e){
+				tõeväärtus = false;
+			}
+		//kontrollib listide pikkuste võrdsust
+		if (tõeväärtus == false || listike.size() != listike2.size()){
+			listike.clear();
+			return listike;
+		}
+		return listike;
+	}
+	
+	void FailiLugemine(HashMap<String,String> tyyp) {
 		try {
 			FileReader fileReader = new FileReader("eelmisedvastused.txt");
 			BufferedReader bufferedReader =  new BufferedReader(fileReader);
@@ -117,7 +102,7 @@ public class Peaklass extends Application {
 		}
 		try {			            
 			DataOutputStream out = new DataOutputStream(new FileOutputStream("eelmisedvastused.txt"));
-			out.writeUTF(tyyp+" oli " + arvuke); //kirjutab faili vastuse
+			out.writeUTF(tyyp.toString()); //kirjutab faili vastuse
 			out.close();    
 
 		} catch (FileNotFoundException e) {
@@ -133,24 +118,14 @@ public class Peaklass extends Application {
 
 	final JLabel vastus = new JLabel("");
 	final JLabel eelmine_vastus = new JLabel("");
-
+	static HashMap<String,String> tyyp = new HashMap<String,String>();
 
 	public void start(Stage peaLava) throws Exception {
 		//vastused, mis kuvatakse (peavad olema String tyypi) 
+		
 		DecimalFormat ymarda = new DecimalFormat("#.####"); //ümardab 4 komakohani
 		String[] options = { "Klassikaline tõenäosus", "Dispersioon, keskväärtus, standardhälve", "Bernoulli valem","Bayesi valem",
 		"Poissoni jaotus" };
-
-
-		final ComboBox<String> kastike = new ComboBox<String>();
-		kastike.getItems().addAll(						//listida kõik erinevad arvutusvõimalused
-				"Klassikaline tõenäosus", 
-				"Dispersioon, keskväärtus, standardhälve", 
-				"Bernoulli valem",
-				"Bayesi valem",
-				"Poissoni jaotus"
-				);
-		
 		
 		
 		
@@ -218,38 +193,80 @@ public class Peaklass extends Application {
 							int k = onint(m);
 							int l = onint(n);
 							if (l == 0) {
-								throw new NulligaJagamiseErind("Kõikide võimaluste arv peab olema 0-st erinev!");
+								throw new VigaseSisendiErind("Kõikide võimaluste arv peab olema 0-st erinev!");
 							}
 							else if (k == -1 || l == -1) {
-								throw new TäisarvuErind("Nii soodsate kui ka kõikide võimaluste arv peab olema täisarv!");
+								throw new VigaseSisendiErind("Nii soodsate kui ka kõikide võimaluste arv peab olema täisarv!");
 							}
 							else if (k > l) {
-								throw new NimetajaVäiksemKuiLugeja("Soodsate võimaluste arv peab olema kõikide võimaluste arvust väiksem või võrdne!");
+								throw new VigaseSisendiErind("Soodsate võimaluste arv peab olema kõikide võimaluste arvust väiksem või võrdne!");
 							}
 
 							KlassikalineTõenäosus tn = new KlassikalineTõenäosus(k,l);
 							double arv = tn.klassikalinetn();
 							
 							arvuke = String.valueOf(ymarda.format(arv));
-							String arvutus = "Tõenäosus on " + arvuke;	
-							FailiLugemine(arvuke, "Klassikaline tõenäosus");
+							tyyp.put("Klassikaline tõenäosus", arvuke);
+							FailiLugemine(tyyp);
+							tyyp.clear();
 							
-							vastus.setText((arvutus));
+							vastus.setText("Tõenäosus: " + arvuke);
 						}
 
-						catch (NulligaJagamiseErind nje) {
+						catch (VigaseSisendiErind nje) {
 							JOptionPane.showMessageDialog(null, nje.getMessage()); //need on message kastid, mis ilmuvad kui tekib erind
 						}
-						catch (TäisarvuErind te) {
-							JOptionPane.showMessageDialog(null, te.getMessage());
-						}
-						catch (NimetajaVäiksemKuiLugeja nv) {
-							JOptionPane.showMessageDialog(null, nv.getMessage());
-						}
+						
 
 					}
 					else if(valikud.getSelectedItem() == "Dispersioon, keskväärtus, standardhälve"){
-						System.out.println("appi");
+						try{
+							ArrayList<String> jaotused = new ArrayList<String>();
+							ArrayList<String> tõenäosused = new ArrayList<String>();
+							String [] osad = koik_voimalused.getText().split(" ");
+							String [] osad2 = toenaosus1.getText().split(" ");
+							double kokku = 0;
+							
+							for (int i= 0; i < osad.length; i++)
+								
+								jaotused.add(osad[i]);
+								
+							for (int j = 0; j < osad2.length; j++){
+								
+								tõenäosused.add(osad2[j]);
+								kokku += Double.parseDouble(osad2[j]);
+							}
+							if (kokku != 1){
+								throw new VigaseSisendiErind("Tõenäosuste summa peab olema 1.");
+							}
+							
+							
+							ArrayList<String> m = onreaalelement(jaotused,tõenäosused);
+							ArrayList<String> n = onreaalelement(tõenäosused,jaotused);
+							
+							if (m.isEmpty() | n.isEmpty()){
+								throw new VigaseSisendiErind("Jaotused akfafoajf");
+							}
+							
+							DispKeskHälve uus = new DispKeskHälve(jaotused,tõenäosused);
+							String kesk = String.valueOf(ymarda.format(uus.keskväärtus()));
+							String disp = String.valueOf(ymarda.format(uus.dispersioon()));
+							String std = String.valueOf(ymarda.format(uus.standardhälve()));
+							tyyp.put("Keskväärtus", kesk);
+							tyyp.put("Standardhälve", std);
+							tyyp.put("Dispersioon", disp);
+							FailiLugemine(tyyp);
+							tyyp.clear();
+							
+							vastus.setText("Keskväärtus: " + kesk + "\n" + "Dispersioon: " + disp + "Standardhälve: " + std);
+							
+						}
+						catch(VigaseSisendiErind er){
+							JOptionPane.showMessageDialog(null,er.getMessage());
+							
+							
+						}
+						
 					}
 					else if(valikud.getSelectedItem() == "Bernoulli valem"){
 						try {
@@ -260,17 +277,17 @@ public class Peaklass extends Application {
 							int l = onint(n);
 							double u = ondouble(t);
 							if (l == 0) {
-								throw new NulligaJagamiseErind("Nulliga ei tohi jagada!");
+								throw new VigaseSisendiErind("Nulliga ei tohi jagada!");
 							}
 							else if (k == -1 || l == -1) {
-								throw new TäisarvuErind("Nii soodsate kui ka kõikide võimaluste arv peab olema täisarv!");
+								throw new VigaseSisendiErind("Nii soodsate kui ka kõikide võimaluste arv peab olema täisarv!");
 							}
 							else if (k > l) {
-								throw new NimetajaVäiksemKuiLugeja("Soodsate võimaluste arv peab olema kõikide võimaluste arvust väiksem või võrdne!");
+								throw new VigaseSisendiErind("Soodsate võimaluste arv peab olema kõikide võimaluste arvust väiksem või võrdne!");
 							}
 							else if (u < 0 || u > 1) {
 								System.out.println("Viga");
-								throw new TõenäosuseErind("Tõenäosus peab jääma alati lõiku [0;1]");
+								throw new VigaseSisendiErind("Tõenäosus peab jääma alati lõiku [0;1]");
 							}
 
 							Bernoulli bernoullike = new Bernoulli(k,l,u);
@@ -278,23 +295,16 @@ public class Peaklass extends Application {
 							System.out.println(vast);
 							String arvuke = String.valueOf(ymarda.format(vast));
 							String arvutus = "Tõenäosus on " + arvuke;
-							vastus.setName(arvutus);
-							FailiLugemine(arvuke, "Bernoulli valemi vastus");
+							vastus.setText(arvutus);
+							tyyp.put("Bernoulli valem", arvuke);
+							FailiLugemine(tyyp);
+							tyyp.clear();
 						}
 
-						catch (NulligaJagamiseErind nje) {
+						catch (VigaseSisendiErind nje) {
 							JOptionPane.showMessageDialog(null, nje.getMessage());
 						}
-						catch (TäisarvuErind te) {
-							JOptionPane.showMessageDialog(null, te.getMessage());
-						}
-						catch (NimetajaVäiksemKuiLugeja nv) {
-							JOptionPane.showMessageDialog(null, nv.getMessage());
-						}
-						catch (TõenäosuseErind te) {
-							JOptionPane.showMessageDialog(null, te.getMessage());
-						}
-
+						
 					}
 					else if(valikud.getSelectedItem() == "Bayesi valem") {
 						try {
@@ -305,25 +315,24 @@ public class Peaklass extends Application {
 							double l = ondouble(n);
 							double u = ondouble(t);
 							if (k == 0) {
-								throw new NulligaJagamiseErind("Nulliga ei tohi jagada!");
+								throw new VigaseSisendiErind("Nulliga ei tohi jagada!");
 							}
 							else if (k < 0 || k > 1 || l < 0 || l > 1 || u < 0 || u > 1) {
-								throw new TõenäosuseErind("Tõenäosus peab jääma alati lõiku [0;1]");
+								throw new VigaseSisendiErind("Tõenäosus peab jääma alati lõiku [0;1]");
 							}
 							BayesiValem bayes = new BayesiValem(k, l, u);
 							double vast = bayes.Bayes();
-							System.out.println(vast);
 							String arvuke = String.valueOf(ymarda.format(vast));
 							String arvutus = "Tõenäosus on " + arvuke;
-							vastus.setName(arvutus);
-							FailiLugemine(arvuke, "Bayesi valemi vastus");
+							vastus.setText(arvutus);
+							tyyp.put("Bayesi valem", arvuke);
+							FailiLugemine(tyyp);
+							tyyp.clear();
 						}
-						catch (NulligaJagamiseErind nje) {
+						catch (VigaseSisendiErind nje) {
 							JOptionPane.showMessageDialog(null, nje.getMessage());
 						}
-						catch (TõenäosuseErind te) {
-							JOptionPane.showMessageDialog(null, te.getMessage());
-						}
+						
 					}
 					else if(valikud.getSelectedItem() == "Poissoni jaotus"){
 						try {
@@ -334,17 +343,17 @@ public class Peaklass extends Application {
 							int l = onint(n);
 							double u = ondouble(t);
 							if (l == 0) {
-								throw new NulligaJagamiseErind("Nulliga ei tohi jagada!");
+								throw new VigaseSisendiErind("Nulliga ei tohi jagada!");
 							}
 							else if (k == -1 || l == -1) {
-								throw new TäisarvuErind("Nii soodsate kui ka kõikide võimaluste arv peab olema täisarv!");
+								throw new VigaseSisendiErind("Nii soodsate kui ka kõikide võimaluste arv peab olema täisarv!");
 							}
 							else if (k > l) {
-								throw new NimetajaVäiksemKuiLugeja("Soodsate võimaluste arv peab olema kõikide võimaluste arvust väiksem või võrdne!");
+								throw new VigaseSisendiErind("Soodsate võimaluste arv peab olema kõikide võimaluste arvust väiksem või võrdne!");
 							}
 							else if (u < 0 || u > 1) {
 								System.out.println("Viga");
-								throw new TõenäosuseErind("Tõenäosus peab jääma alati lõiku [0;1]");
+								throw new VigaseSisendiErind("Tõenäosus peab jääma alati lõiku [0;1]");
 							}
 
 							PoissoniJaotus poisson = new PoissoniJaotus(k, l, u);
@@ -352,22 +361,16 @@ public class Peaklass extends Application {
 							System.out.println(arv);
 							String arvuke = String.valueOf(ymarda.format(arv));
 							String arvutus = "Tõenäosus on " + arvuke;
-							vastus.setName(arvutus);
-							FailiLugemine(arvuke, "Poissoni jaotuse vastus");
+							vastus.setText(arvutus);
+							tyyp.put("Poissoni jaotus", arvuke);
+							FailiLugemine(tyyp);
+							tyyp.clear();
 						}
 
-						catch (NulligaJagamiseErind nje) {
+						catch (VigaseSisendiErind nje) {
 							JOptionPane.showMessageDialog(null, nje.getMessage());
 						}
-						catch (TäisarvuErind te) {
-							JOptionPane.showMessageDialog(null, te.getMessage());
-						}
-						catch (NimetajaVäiksemKuiLugeja nv) {
-							JOptionPane.showMessageDialog(null, nv.getMessage());
-						}
-						catch (TõenäosuseErind te) {
-							JOptionPane.showMessageDialog(null, te.getMessage());
-						}
+						
 
 					}
 
@@ -395,7 +398,7 @@ public class Peaklass extends Application {
 
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		
-		frame.setPreferredSize(new Dimension(600, 400));
+		frame.setPreferredSize(new Dimension(700, 400));
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
@@ -404,3 +407,4 @@ public class Peaklass extends Application {
 
 
 }
+
